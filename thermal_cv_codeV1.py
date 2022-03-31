@@ -9,8 +9,8 @@ mlx = adafruit_mlx90640.MLX90640(i2c)
 mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_16_HZ
 mlx_shape = (24,32)
 colormap = plt.get_cmap('plasma')
-OldMax = 40
-OldMin = 20
+OldMax = 38
+OldMin = 25
 NewMax = 255
 NewMin = 0
 frame = np.zeros((24*32,))
@@ -25,7 +25,7 @@ while True:
       framearr = np.reshape(Newframe, (24, 32))
       frameformat = framearr.astype(np.uint8)
       near_img = cv2.resize(frameformat,None, fx = 20, fy = 20, interpolation = cv2.INTER_CUBIC )
-      ret, thresh = cv2.threshold(near_img, 115, 255, 0)
+      ret, thresh = cv2.threshold(near_img, 50, 255, 0)
       contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
       cv2.drawContours(near_img, contours, -1, (0,255,0), 3)
       t_array.append(time.monotonic()-t1)

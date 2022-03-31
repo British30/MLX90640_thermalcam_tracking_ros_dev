@@ -10,7 +10,7 @@ mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_16_HZ
 mlx_shape = (24,32)
 colormap = plt.get_cmap('plasma')
 OldMax = 40
-OldMin = 20
+OldMin = 15
 NewMax = 255
 NewMin = 0
 frame = np.zeros((24*32,))
@@ -34,11 +34,11 @@ while True:
        bottommost = tuple(cnt[cnt[:,:,1].argmax()][0])
        cv2.circle(near_img,(leftmost), 10, (0,0,255), -1)
     
-      rgb = cv2.cvtColor(near_img, cv2.COLOR-GRAY2RGB)
+      rgb = cv2.cvtColor(near_img, cv2.COLOR_GRAY2RGB)
       cv2.drawContours(near_img, contours, -1, (0,255,0), 3)
       t_array.append(time.monotonic()-t1)
       print('Sample rate: {0:2.1f}fps'.format(len(t_array)/np.sum(t_array)))
-      cv2.imshow("THERMAL IMAGE", near_img)  
+      cv2.imshow("THERMAL IMAGE", rgb)  
       cv2.waitKey(10)
  
       
