@@ -7,7 +7,7 @@ from math import sqrt
 font = cv2.FONT_HERSHEY_SIMPLEX
 i2c = busio.I2C(board.SCL, board.SDA, frequency=1000000)
 mlx = adafruit_mlx90640.MLX90640(i2c)
-mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_4_HZ
+mlx.refresh_rate = adafruit_mlx90640.RefreshRate.REFRESH_16_HZ
 mlx_shape = (24,32)
 OldMax = 38
 OldMin = 25
@@ -26,7 +26,7 @@ while True:
       framearr = np.reshape(Newframe, (24, 32))
       frameformat = framearr.astype(np.uint8)
       near_img = cv2.resize(frameformat,None, fx = 20, fy = 20, interpolation = cv2.INTER_CUBIC )
-      ret, thresh = cv2.threshold(near_img, 100, 255, 0)
+      ret, thresh = cv2.threshold(near_img, 70, 255, 0)
       contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
       rgb = cv2.cvtColor(near_img, cv2.COLOR_GRAY2RGB)
       for cnt in contours:
@@ -58,7 +58,7 @@ while True:
       cv2.putText(rgb,str(int(len(t_array)/np.sum(t_array))),(20,30), font, 1,(255,255,255),2,cv2.LINE_AA)
       cv2.drawContours(rgb, contours, -1, (0,255,0), 2)
       #print('Sample rate: {0:2.1f}fps'.format(len(t_array)/np.sum(t_array)))
-      cv2.imshow("THERMAL IMAGE", thresh)  
+      cv2.imshow("THERMAL IMAGE", rgb)  
       cv2.waitKey(10)
  
       
