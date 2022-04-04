@@ -15,7 +15,6 @@ NewMax = 255
 NewMin = 0
 frame = np.zeros((24*32,))
 t_array = []
-flag = 0
 ratio_lst =  []
 while True:
      t1 = time.monotonic()
@@ -42,30 +41,37 @@ while True:
        width = rightdowncorner[0]-leftupcorner[0]
        height = rightdowncorner[1]-leftupcorner[1]
        ratio = float(width/height)
+       area = int(width*height)
        
-       if ratio > 0.3 and ratio < 0.8:
-         ratio_lst.append(ratio)
-  
-      flag+=1
-      if flag == 5:
-         if np.average(ratio_lst) > 0.39 and np.average(ratio_lst) < 0.75:
-           cv2.putText(rgb,str(ratio),(centercol+10,centerrow-40), font, 1,(25,25,255),2,cv2.LINE_AA)
-           cv2.circle(rgb,(centercol,centerrow), 10, (255,255,255), -1)
-           cv2.circle(rgb,(leftupcorner), 10, (0,255,255), -1)
-           cv2.circle(rgb,(rightdowncorner), 10, (255,0,255), -1)
-           cv2.circle(rgb,(leftmost), 10, (0,0,255), -1)
-           cv2.circle(rgb,(rightmost), 10, (0,0,255), -1)
-           cv2.circle(rgb,(topmost), 10, (0,0,255), -1)
-           cv2.circle(rgb,(bottommost), 10, (0,0,255), -1)
-           print("PASSSEDDD")
-         ratio_lst =  []
-         flag=0
-         
-         
-      print(flag)   
+       if ratio > 0.2 and ratio < 0.9 and area > 6000:
+         cnt_track = []
+         centercol_track=0
+         centerrow_track=0
+         area_track= 0
+         leftupcorner_track=[0,0]
+         rightdowncorner_track=[0,0]
+         cnt_track.append(cnt)
+         centercol = centercol_track
+         centerrow = centerrow_track
+         area = area_track
+         leftupcorner = leftupcorner_track
+         rightdowncorner = rightdowncorner_track
+         ratio_lst.insert(0, ratio)
+         if len(ratio_lst) > 10: 
+          ratio_lst.pop()
+       
+      if np.average(ratio_lst) > 0.3 and np.average(ratio_lst) < 0.8:
+           cv2.putText(rgb,str(area_track),(centercol+10,centerrow-40), font, 1,(25,25,255),2,cv2.LINE_AA)
+           cv2.circle(rgb,(centercol_track,centerrow_track), 10, (255,255,255), -1)
+           cv2.circle(rgb,(leftupcorner_track), 10, (0,255,255), -1)
+           cv2.circle(rgb,(rightdowncorner_track), 10, (255,0,255), -1)
+
+           cv2.drawContours(rgb, cnt_track, -1, (0,255,0), 2)
+        
+      
       t_array.append(time.monotonic()-t1)
       cv2.putText(rgb,str(int(len(t_array)/np.sum(t_array))),(20,30), font, 1,(255,255,255),2,cv2.LINE_AA)
-      cv2.drawContours(rgb, contours, -1, (0,255,0), 2)
+      
       #print('Sample rate: {0:2.1f}fps'.format(len(t_array)/np.sum(t_array)))
       cv2.imshow("THERMAL IMAGE", rgb)  
       cv2.waitKey(10)
